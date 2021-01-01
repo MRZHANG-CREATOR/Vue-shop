@@ -37,12 +37,13 @@
 </template>
 
 <script>
+import { apiLogin } from '../api/index'
 export default {
   data () {
     return {
       loginForm: {
-        username: '',
-        password: '123'
+        username: '123456',
+        password: '123456'
       },
       //   表单规则
       loginFormRules: {
@@ -63,10 +64,23 @@ export default {
       //   console.log(this)
       this.$refs.loginFormRef.resetFields()
     },
-    login () {
-      this.$refs.loginFormRef.validate(valid => {
+    async login () {
+      this.$refs.loginFormRef.validate(async valid => {
+        console.log(this.loginForm.username, this.loginForm.password)
         if (!valid) return
-        this.$http.post('./login', this.loginForm)
+        // const result = await this.$http.post('./login', this.loginForm)
+        // console.log(result)
+        const res = await apiLogin({
+          username: this.loginForm.username,
+          password: this.loginForm.password
+        })
+        console.log(res)
+        if (res.meta.status !== 200) { return this.$message.error('用户名或密码错误') } //
+        this.$message.success('登录成功')
+        // token保存到sessionStorage中
+        window.sessionStorage.setItem('token', res.data.token)
+        // 编程式导航 重定向到home
+        this.$router.push('/home')
       })
     }
   }
