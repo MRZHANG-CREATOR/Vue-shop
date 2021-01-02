@@ -5,7 +5,7 @@
       <div class="avatar_box">
         <img src="../assets/logo.png" alt="" />
       </div>
-      <!--头像区域-->
+      <!--头像区域end-->
       <el-form
         class="login_form"
         ref="loginFormRef"
@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     //   重置表单
-    resetLoginForm () {
+    resetLoginForm() {
       //   console.log(this)
       this.$refs.loginFormRef.resetFields()
     },
@@ -75,7 +75,9 @@ export default {
           password: this.loginForm.password
         })
         console.log(res)
-        if (res.meta.status !== 200) { return this.$message.error('用户名或密码错误') } //
+        if (res.meta.status !== 200) {
+          return this.$message.error('用户名或密码错误')
+        } //
         this.$message.success('登录成功')
         // token保存到sessionStorage中
         window.sessionStorage.setItem('token', res.data.token)

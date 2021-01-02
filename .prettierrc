@@ -1,0 +1,5 @@
+// 格式化配置文件 json
+{
+    "semi":false, // 格式化不加分号
+    "singleQuote":true // 单引号替换双引号
+}
