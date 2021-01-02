@@ -11,6 +11,7 @@ router.get('/',ctx=>{
     ctx.body='success'
 })
 router.post('/login',require('./route/loginpost'))
+router.get('/menus',require('./route/menusget'))
 app.use(router.routes())
 app.listen(8888,"0.0.0.0",ctx => {
     console.log('服务器成功:http://127.0.0.1:8888')
