@@ -1,5 +1,4 @@
 module.exports = ctx => {
-  console.log('请求menu')
   ctx.body = {
     data: [
       {
@@ -29,7 +28,7 @@ module.exports = ctx => {
           path: 'rights',
           children: []
         }
-    ]
+        ]
       },
       {
         id: 103,
@@ -38,17 +37,17 @@ module.exports = ctx => {
         children: [{
           id: 1031,
           authName: '商品列表',
-          path: null,
+          path: 'cartlist',
           children: []
-        },{
+        }, {
           id: 1032,
           authName: '分类参数',
-          path: null,
+          path: 'sortpar',
           children: []
-        },{
+        }, {
           id: 1033,
           authName: '商品分类',
-          path: null,
+          path: 'goodclass',
           children: []
         }]
       },
@@ -59,7 +58,7 @@ module.exports = ctx => {
         children: [{
           id: 1041,
           authName: '商品列表',
-          path: null,
+          path: 'order',
           children: []
         }]
       },
@@ -70,7 +69,7 @@ module.exports = ctx => {
         children: [{
           id: 1051,
           authName: '商品列表',
-          path: null,
+          path: 'data',
           children: []
         }]
       }

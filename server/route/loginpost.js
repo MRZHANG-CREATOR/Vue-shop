@@ -9,7 +9,7 @@ module.exports = async ctx => {
     username,
     password
   } = ctx.request.body
-  let user = await userData.findOne({
+  const user = await userData.findOne({
     username: username
   })
   console.log(user)
@@ -18,17 +18,16 @@ module.exports = async ctx => {
       data: user,
       meta: {
         status: 200,
-        msg: "登录成功",
+        msg: '登录成功'
       }
-    };
+    }
   } else {
     ctx.body = {
       data: {},
       meta: {
         status: 400,
-        msg: "登录失败",
+        msg: '登录失败'
       }
-    };
+    }
   }
-
 }

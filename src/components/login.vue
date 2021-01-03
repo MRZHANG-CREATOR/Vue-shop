@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     //   重置表单
-    resetLoginForm() {
+    resetLoginForm () {
       //   console.log(this)
       this.$refs.loginFormRef.resetFields()
     },
@@ -74,7 +74,6 @@ export default {
           username: this.loginForm.username,
           password: this.loginForm.password
         })
-        console.log(res)
         if (res.meta.status !== 200) {
           return this.$message.error('用户名或密码错误')
         } //

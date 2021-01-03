@@ -87,7 +87,6 @@ export default {
       const res = await apiGetMenuList()
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
-      console.log(this.menuList[0].authName)
     },
     toggleCollapse() {
       // 侧边栏折叠展开
@@ -128,7 +127,6 @@ export default {
 }
 .el-aside {
   background-color: #333744;
-  overflow: hidden;
   .toggle-button {
     line-height: 24px;
     text-align: center;
