@@ -3,8 +3,8 @@ const {
 } = require('../model/userdata')
 
 module.exports = async ctx => {
-  console.log('跨域成功')
-  console.log(ctx.request.body)
+  // console.log('跨域成功')
+  // console.log(ctx.request.body)
   const {
     username,
     password

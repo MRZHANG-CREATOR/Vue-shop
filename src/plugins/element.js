@@ -22,9 +22,10 @@ import {
   TableColumn,
   Switch,
   Tooltip,
-  Pagination
+  Pagination,
+  Dialog
 } from 'element-ui'
-
+Vue.use(Dialog)
 Vue.use(Pagination) // 全局注册组件
 Vue.use(Tooltip) // 全局注册组件
 Vue.use(Switch) // 全局注册组件

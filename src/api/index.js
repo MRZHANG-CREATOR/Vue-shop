@@ -22,7 +22,10 @@ export async function apiGetUsersList(queryInfo) {
   return res
 }
 export async function apiUserStateChange(userInfo) {
-  const res = await axios.put(`users/${userInfo._id}/state/${userInfo.mg_state}`)
-  console.log(res)
+  const { data: res } = await axios.put(`/api/users?id=${userInfo._id}&state=${userInfo.mg_state}`)
+  return res
+}
+export async function apiAddUser(io) {
+  const { data: res } = await axios.post('/api/users', { username: io.username, password: io.password, email: io.email, mobile: io.mobile })
   return res
 }
