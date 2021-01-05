@@ -29,3 +29,8 @@ export async function apiAddUser(io) {
   const { data: res } = await axios.post('/api/users', { username: io.username, password: io.password, email: io.email, mobile: io.mobile })
   return res
 }
+export async function apiShowUser(id) {
+  const res = await axios.get(`/api/useredit?id=${id}`)
+  console.log(res)
+  return res
+}

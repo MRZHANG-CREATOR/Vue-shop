@@ -12,8 +12,8 @@
       <!-- 搜索框-->
       <el-row :gutter="20">
         <el-col :span="10">
-          <el-input placeholder="请输入内容" class="input-with-select" v-model="queryInfo.query" :clearable="true" @clear="getUserList()">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" class="input-with-select" v-model="queryInfo.query" :clearable="true" @clear="getUsersList(queryInfo)">
+            <el-button slot="append" icon="el-icon-search" @click='getUsersList(queryInfo)'></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
@@ -42,8 +42,8 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180px">
-          <template>
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click='showEditDialog()'></el-button>
+          <template slot-scope="scope">
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click='showEditDialog(scope.row._id)'></el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
             <el-tooltip
               effect="dark"
@@ -60,9 +60,9 @@
       <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="queryInfo.pageNum"
+      :current-page="queryInfo.pagenum"
       :page-sizes="[1, 2, 5, 10]"
-      :page-size="queryInfo.pageSize"
+      :page-size="queryInfo.pagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
     </el-pagination>
@@ -89,7 +89,7 @@
   </el-form-item>
     </el-form>
     <!--底部按钮-->
-  <span slot="footer" class="dialog-footer">
+  <span  class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="addUser">确 定</el-button>
   </span>
@@ -97,21 +97,32 @@
 
 <!--修改用户的对话框-->
 <el-dialog
-  title="修改用户"
+  title="修改用户信息"
   :visible.sync="editDialogVisible"
-  width="30%"
-  :before-close="handleClose">
-  <span>这是一段信息</span>
-  <span slot="footer" class="dialog-footer">
+  width="50%"
+  @close="editDialogClose"
+  >
+<el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="80px" class="demo-ruleForm">
+  <el-form-item label="用户名" prop="username">
+    <el-input v-model="editForm.username" disabled :readonly="true"></el-input>
+  </el-form-item>
+  <el-form-item label="邮箱" prop="email">
+    <el-input v-model="editForm.email" ></el-input>
+  </el-form-item>
+  <el-form-item label="手机号码" prop="mobile">
+    <el-input v-model="editForm.mobile" type="number"></el-input>
+  </el-form-item>
+</el-form>
+  <span  class="dialog-footer">
     <el-button @click="editDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+    <el-button type="primary" @click="editUserInfo">确 定</el-button>
   </span>
 </el-dialog>
   </div>
 </template>
 
 <script>
-import { apiGetUsersList, apiUserStateChange, apiAddUser } from '../api'
+import { apiGetUsersList, apiUserStateChange, apiAddUser, apiShowUser } from '../api'
 export default {
   data() {
     var checkEmail = (rule, value, cb) => {
@@ -127,8 +138,8 @@ export default {
     return {
       queryInfo: {
         query: '', // 搜索用户关键字
-        pageNum: 1,
-        pageSize: 2
+        pagenum: 1,
+        pagesize: 2
       },
       userList: [],
       total: 0,
@@ -138,9 +149,16 @@ export default {
         username: [{ required: true, message: '请输入用户名', triggle: 'blur' }, { min: 2, max: 10, message: '长度在2-10个字符之间', triggle: 'blur' }],
         password: [{ required: true, message: '请输入密码', triggle: 'blur' }, { min: 2, max: 10, message: '长度在2-10个字符之间', triggle: 'blur' }],
         email: [{ required: true, message: '请输入邮箱', triggle: 'blur' }, { validator: checkEmail, triggle: 'blur' }],
-        mobile: [{ required: true, message: '请输入手机号', triggle: 'blur' }, { validator: checkMobile, triggle: 'blur' }]
+        mobile: [{ required: true, type: 'number', message: '请输入手机号', triggle: 'blur' }, { validator: checkMobile }]
       }, // 添加用户表单规则
-      editDialogVisible: false// 修改用户对话框显示隐藏
+      editDialogVisible: false, // 修改用户对话框显示隐藏
+      editForm: {// 查询到的用户信息
+
+      },
+      editFormRules: {
+        email: [{ required: true, message: '请输入邮箱', triggle: 'blur' }, { validator: checkEmail, triggle: 'blur' }],
+        mobile: [{ required: true, message: '请输入手机号', triggle: 'blur' }, { validator: checkMobile, triggle: 'blur' }]
+      }
     }
   },
   created() {
@@ -149,22 +167,24 @@ export default {
   methods: {
     async getUsersList(queryInfo) {
       const res = await apiGetUsersList(queryInfo)
-      console.log(res)
+      // console.log(res)
       if (res.meta.status !== 200) return this.$message.error('获取用户列表失败')
       this.userList = res.data.users
       this.total = res.data.total
-      console.log(this.userList)
+      // console.log(this.queryInfo.pagesize)
     },
     handleSizeChange(newPageSize) { // 监听总页数改变
-      console.log(newPageSize)
-      this.pageSize = newPageSize
+      // console.log(newPageSize)
+      this.queryInfo.pagesize = newPageSize
+      this.getUsersList(this.queryInfo)
     },
-    handleCurrentChange(newCurrentPage) {
-      console.log(newCurrentPage)
-      this.pageNum = newCurrentPage
+    handleCurrentChange(newCurrentPage) { // 监听当前页改变
+      // console.log(newCurrentPage)
+      this.queryInfo.pagenum = newCurrentPage
+      this.getUsersList(this.queryInfo)
     },
-    async userStateChange(userInfo) {
-      console.log(userInfo)
+    async userStateChange(userInfo) { // 更新用户状态
+      // console.log(userInfo)
       const res = await apiUserStateChange(userInfo)
       console.log(res)
       if (res.meta.status !== 200) {
@@ -178,10 +198,10 @@ export default {
     },
     addUser() { // 添加用户确定后校验与请求
       this.$refs.addFormRef.validate(async valid => {
-        console.log(valid)
+        // console.log(valid)
         if (!valid) return
         const res = await apiAddUser(this.addForm)
-        console.log(res)
+        // console.log(res)
         if (res.meta.status !== 201) {
           return this.$message.error(res.meta.msg)
         }
@@ -190,8 +210,28 @@ export default {
         this.getUsersList(this.queryInfo)// 重新获取用户列表
       })
     },
-    showEditDialog() {
+    async showEditDialog(id) { // 获取用户信息
+      console.log(id)
       this.editDialogVisible = true
+      const { data: res } = await apiShowUser(id)
+      console.log(typeof res.data.mobile)
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.$message.success(res.meta.msg)
+      this.editForm = res.data
+      this.editForm.mobile = res.data.mobile.toString()
+      // console.log(this.editForm)
+    },
+    editDialogClose() {
+      this.$refs.editFormRef.resetFields()
+    },
+    editUserInfo() {
+      this.$refs.editFormRef.validate((valid) => {
+        console.log(valid)
+        if (!valid) return
+        this.editDialogVisible = false
+      })
     }
   }
 }

@@ -16,6 +16,7 @@ router.get('/menus', require('./route/menusget'))// 侧边栏列表路由
 router.get('/users', require('./route/usersget'))// 用户获取路由
 router.put('/users', require('./route/usersput'))// 用户状态路由
 router.post('/users', require('./route/userspost'))// 添加用户路由
+router.get('/useredit', require('./route/usereditget'))// 用户修改信息路由
 app.use(router.routes())
 app.listen(8888, '0.0.0.0', ctx => {
   console.log('服务器成功:http://127.0.0.1:8888')
