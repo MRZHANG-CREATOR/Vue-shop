@@ -1,27 +1,26 @@
 const {
   userData
 } = require('../model/userdata')
-
 module.exports = async ctx => {
-  const { id, state } = ctx.query
-  // console.log(id)
-  // console.log(state)
+  const { id } = ctx.query
+  //   console.log(id)
   try {
-    await userData.updateOne({ _id: id }, { mg_state: state })
+    await userData.findByIdAndDelete(id)
     ctx.body = {
       data: {
       },
       meta: {
-        msg: state === 'true' ? '用户开启状态' : '用户冻结状态',
+        msg: '用户删除成功',
         status: 200
       }
     }
   } catch (err) {
+    console.log(err)
     ctx.body = {
       data: {
       },
       meta: {
-        msg: '',
+        msg: '用户删除失败',
         status: 400
       }
     }

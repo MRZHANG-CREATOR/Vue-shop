@@ -3,7 +3,7 @@ const {
 } = require('../model/userdata')
 const jwt = require('jsonwebtoken')
 module.exports = async ctx => {
-  console.log(ctx.request.body)
+  // console.log(ctx.request.body)
   const userInfo = ctx.request.body
   const token = jwt.sign({
     name: userInfo.username,

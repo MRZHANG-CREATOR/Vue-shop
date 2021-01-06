@@ -3,12 +3,13 @@ const {
 } = require('../model/userdata')
 module.exports = async ctx => {
   const { id } = ctx.query
-  console.log(id)
+  // console.log(id)
   try {
     const user = await userData.findById(id)
-    console.log(user)
+    // console.log(user)
     ctx.body = {
       data: {
+        id: user._id,
         username: user.username,
         email: user.email,
         mobile: user.mobile

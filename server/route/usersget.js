@@ -3,7 +3,7 @@ const {
 } = require('../model/userdata')
 const pagination = require('mongoose-sex-page')
 module.exports = async ctx => {
-  console.log(ctx.query)
+  // console.log(ctx.query)
   const queryInfo = JSON.parse(ctx.query.queryInfo)
   // console.log(queryInfo)
   // console.log(queryInfo.query + '')
@@ -17,7 +17,8 @@ module.exports = async ctx => {
          data: {
            pagenum: 1,
            total: users.total,
-           users: users.records
+           users: users.records,
+           currentsize: users.size
          },
          meta: {
            msg: '用户列表获取成功',

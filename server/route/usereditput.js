@@ -1,18 +1,19 @@
 const {
   userData
 } = require('../model/userdata')
-
 module.exports = async ctx => {
-  const { id, state } = ctx.query
-  // console.log(id)
-  // console.log(state)
+  const { id } = ctx.query
+  const { email, mobile } = ctx.request.body
   try {
-    await userData.updateOne({ _id: id }, { mg_state: state })
+    await userData.updateOne({ _id: id }, {
+      email: email,
+      mobile: mobile
+    })
     ctx.body = {
       data: {
       },
       meta: {
-        msg: state === 'true' ? '用户开启状态' : '用户冻结状态',
+        msg: '用户信息更新成功',
         status: 200
       }
     }
@@ -21,7 +22,7 @@ module.exports = async ctx => {
       data: {
       },
       meta: {
-        msg: '',
+        msg: '用户信息更新失败',
         status: 400
       }
     }

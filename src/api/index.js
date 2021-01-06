@@ -30,7 +30,15 @@ export async function apiAddUser(io) {
   return res
 }
 export async function apiShowUser(id) {
-  const res = await axios.get(`/api/useredit?id=${id}`)
+  const res = await axios.get(`/api/usershow?id=${id}`)
   console.log(res)
+  return res
+}
+export async function apiEditUserInfo(id, editUserInfo) {
+  const res = await axios.put('/api/useredit?id=' + id, editUserInfo)
+  return res
+}
+export async function apiDeleteUser(id) {
+  const res = await axios.delete('/api/userdelete?id=' + id)
   return res
 }
