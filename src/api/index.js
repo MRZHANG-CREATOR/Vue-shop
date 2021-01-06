@@ -42,3 +42,11 @@ export async function apiDeleteUser(id) {
   const res = await axios.delete('/api/userdelete?id=' + id)
   return res
 }
+export async function apiGetRightsList(type) {
+  const res = await axios.get('/api/rights?type=' + type)
+  return res
+}
+export async function apiGetRolesList() {
+  const res = await axios.get('/api/roles')
+  return res
+}

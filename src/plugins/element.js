@@ -24,9 +24,11 @@ import {
   Tooltip,
   Pagination,
   Dialog,
-  MessageBox
+  MessageBox,
+  Tag
 } from 'element-ui'
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.use(Tag)
 Vue.use(Dialog)
 Vue.use(Pagination) // 全局注册组件
 Vue.use(Tooltip) // 全局注册组件
