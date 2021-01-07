@@ -25,9 +25,11 @@ import {
   Pagination,
   Dialog,
   MessageBox,
-  Tag
+  Tag,
+  Tree
 } from 'element-ui'
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.use(Tree)
 Vue.use(Tag)
 Vue.use(Dialog)
 Vue.use(Pagination) // 全局注册组件
