@@ -3,7 +3,7 @@ module.exports = async ctx => {
     ctx.body = {
       data: [
         {
-          id: 30,
+          id: 32,
           roleName: '主管',
           roleDesc: '技术负责人',
           children: [

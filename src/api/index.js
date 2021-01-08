@@ -50,3 +50,7 @@ export async function apiGetRolesList() {
   const res = await axios.get('/api/roles')
   return res
 }
+export async function apiEditRoleRight(id, idStr) {
+  const res = await axios.post('/api/roles?id=' + id, idStr)
+  return res
+}

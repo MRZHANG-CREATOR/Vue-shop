@@ -92,10 +92,10 @@
       :visible.sync="setRightdialogVisible"
       width="50%"
     >
-      <el-tree :data="rightsList" :props="treeProps" :show-checkbox="true" node-key="id" :default-expand-all="true" :default-checked-keys="defKeys"></el-tree>
+      <el-tree ref="treeRef" :data="rightsList" :props="treeProps" :show-checkbox="true" node-key="id" :default-expand-all="true" :default-checked-keys="defKeys"></el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="setRightdialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="setRightdialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="allotRights">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -104,7 +104,8 @@
 <script>
 import {
   apiGetRolesList,
-  apiGetRightsList
+  apiGetRightsList,
+  apiEditRoleRight
 } from '../../api'
 export default {
   data() {
@@ -116,7 +117,8 @@ export default {
       treeProps: { // 树形控件属性绑定
         label: 'authName',
         children: 'children'
-      }
+      },
+      roleId: ''
     }
   },
   created() {
@@ -152,6 +154,7 @@ export default {
       this.$message.success('确认删除')
     },
     async showSetRightDialog(role) {
+      this.roleId = role.id
       const { data: res } = await apiGetRightsList('tree')
       if (res.meta.status !== 200) {
         return this.$message.error(res.meta.msg)
@@ -169,6 +172,19 @@ export default {
       node.children.forEach(item => {
         this.getLeafKeys(item, arr)
       })
+    },
+    async  allotRights() {
+      const keys = [...this.$refs.treeRef.getCheckedKeys(), ...this.$refs.treeRef.getHalfCheckedKeys()]
+      const idStr = keys.join(',')
+      const { data: res } = await apiEditRoleRight(this.roleId, idStr)
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.getRolesList()
+      this.setRightdialogVisible = false
+      console.log(res)
+      console.log(idStr)
+      console.log(keys)
     }
   }
 }

@@ -73,7 +73,7 @@
               placement="top"
               :enterable="false"
             >
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -147,6 +147,27 @@
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
       </span>
     </el-dialog>
+    <!--分配角色弹框-->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="setRoleDialogVisible"
+      width="50%"
+    >
+    <p>当前用户名：{{userInfo.username}}</p>
+    <p>当前用户角色：{{userInfo.role_name}}</p>
+    <p>分配角色列表： <el-select v-model="selectedRoleId" placeholder="请选择">
+    <el-option
+      v-for="item in rolesList"
+      :key="item.id"
+      :label="item.roleName"
+      :value="item.id">
+    </el-option>
+  </el-select></p>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -157,7 +178,8 @@ import {
   apiAddUser,
   apiShowUser,
   apiEditUserInfo,
-  apiDeleteUser
+  apiDeleteUser,
+  apiGetRolesList
 } from '../api'
 export default {
   data() {
@@ -205,6 +227,7 @@ export default {
         ]
       }, // 添加用户表单规则
       editDialogVisible: false, // 修改用户对话框显示隐藏
+      setRoleDialogVisible: false, // 分配角色对话框显示隐藏
       editForm: {
         // 查询到的用户信息
       },
@@ -217,7 +240,10 @@ export default {
           { required: true, message: '请输入手机号', triggle: 'blur' },
           { validator: checkMobile, triggle: 'blur' }
         ]
-      }
+      },
+      userInfo: {}, // 角色信息
+      rolesList: [], // 角色列表
+      selectedRoleId: ''
     }
   },
   created() {
@@ -336,6 +362,23 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    async setRole(userInfo) {
+      this.userInfo = userInfo
+      const { data: res } = await apiGetRolesList()
+      this.rolesList = res.data
+      console.log(this.rolesList)
+      this.setRoleDialogVisible = true
+    },
+    saveRoleInfo() { // 点击确定按钮分配权限
+      console.log(this.selectedRoleId)
+      if (!this.selectedRoleId) {
+        return this.$message.error('请选择角色后确定')
+      }
+      // 后端发起请求分配角色
+      this.$message.success('角色分配成功')
+      this.setRoleDialogVisible = false
+      this.selectedRoleId = ''
     }
   }
 }
