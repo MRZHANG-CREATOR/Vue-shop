@@ -47,7 +47,7 @@ module.exports = ctx => {
         }, {
           id: 1033,
           authName: '商品分类',
-          path: 'goodclass',
+          path: 'categories',
           children: []
         }]
       },

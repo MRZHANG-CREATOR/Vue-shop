@@ -54,3 +54,7 @@ export async function apiEditRoleRight(id, idStr) {
   const res = await axios.post('/api/roles?id=' + id, idStr)
   return res
 }
+export async function apiGetCateList(queryInfo) {
+  const res = await axios.get('/api/categories', queryInfo)
+  return res
+}

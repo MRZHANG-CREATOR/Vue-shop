@@ -22,6 +22,7 @@ router.delete('/userdelete', require('./route/userdelete'))// 删除用户
 router.get('/rights', require('./route/rightsget'))
 router.get('/roles', require('./route/rolesget'))
 router.post('/roles', require('./route/rolespost'))// 分配权限路由
+router.get('/categories', require('./route/cate/categoriesget'))
 app.use(router.routes())
 app.listen(8888, '0.0.0.0', ctx => {
   console.log('服务器成功:http://127.0.0.1:8888')
