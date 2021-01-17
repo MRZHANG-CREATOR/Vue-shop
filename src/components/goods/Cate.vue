@@ -41,8 +41,8 @@
           <el-tag type="warning" size="mini" v-else>三级</el-tag>
         </template>
         <template slot="opt">
-          <el-button type="primary" icon="el-icon-edit"></el-button>
-          <el-button type="danger" icon="el-icon-delete"></el-button>
+          <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
         </template>
       </tree-table>
       <!--分页-->
@@ -57,23 +57,30 @@
       >
       </el-pagination>
       <!--添加分类对话框-->
-      <el-dialog
-        title="提示"
-        :visible.sync="addCateDialogVisible"
-        width="30%"
-        :before-close="handleClose"
-      >
-        <el-form ref="addCateFormRef" :model="addCateForm" rules="addCateFormRules" label-width="100px">
-          <el-form-item label="分类名称">
-            <el-input v-model="addCateForm.cat_name" prop="cat_name"></el-input>
+      <el-dialog title="提示" :visible.sync="addCateDialogVisible" width="50%">
+        <el-form
+          ref="addCateFormRef"
+          :model="addCateForm"
+          :rules="addCateFormRules"
+          label-width="100px"
+        >
+          <el-form-item label="分类名称" prop="cat_name">
+            <el-input v-model="addCateForm.cat_name"></el-input>
           </el-form-item>
           <el-form-item label="父级分类">
-            <el-input v-model="addCateForm.cat_name" ></el-input>
+            <el-cascader
+              v-model="selectedKeys"
+              :options="parentCateList"
+              :props="cascaderProps"
+              @change="parentCateChanged"
+              :clearable="true"
+              :change-on-select="true"
+            ></el-cascader>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          <el-button @click="addCateDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="addCateDialogVisible = false">确 定</el-button>
         </span>
       </el-dialog>
     </el-card>
@@ -122,7 +129,14 @@ export default {
       addCateFormRules: {
         cat_name: [{ required: true, message: '输入分类名称', triggle: 'blur' }]
       },
-      parentCateList: []
+      parentCateList: [],
+      cascaderProps: {
+        expandTrigger: 'hover',
+        label: 'cat_name',
+        value: 'cat_id',
+        children: 'children'
+      },
+      selectedKeys: [] // 父级列表选择后ID   必须是数组
     }
   },
   created() {
@@ -131,10 +145,10 @@ export default {
   methods: {
     async getCateList() {
       // 获取商品列表数据
-      const { data: res } = await apiGetCateList(this.queryInfo)
+      const { data: res } = await apiGetCateList()
       this.cateList = res.data.result // 分类列表
       this.total = res.data.total // 列表总数
-      console.log(res)
+      // console.log(res)
     },
     handleSizeChange(newSize) {
       // 监听 pagesize change
@@ -147,11 +161,19 @@ export default {
       this.getCateList()
     },
     showAddCateDialog() {
+      this.getParentCateList()
       this.addCateDialogVisible = true
     },
-    getParentCateList() { // 获取父级列表
-
-    }
+    async getParentCateList() {
+      // 获取父级列表
+      const { data: res } = await apiGetCateList('2')
+      console.log(res)
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.parentCateList = res.data
+    },
+    parentCateChanged() {}
   }
 }
 </script>
@@ -162,5 +184,8 @@ export default {
 }
 .el-pagination {
   margin-top: 10px;
+}
+.el-cascader {
+  width: 100%;
 }
 </style>
