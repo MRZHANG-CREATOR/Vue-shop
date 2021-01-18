@@ -42,7 +42,7 @@ module.exports = ctx => {
         }, {
           id: 1032,
           authName: '分类参数',
-          path: 'sortpar',
+          path: 'params',
           children: []
         }, {
           id: 1033,
