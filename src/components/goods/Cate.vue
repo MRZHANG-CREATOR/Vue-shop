@@ -57,7 +57,7 @@
       >
       </el-pagination>
       <!--添加分类对话框-->
-      <el-dialog title="提示" :visible.sync="addCateDialogVisible" width="50%">
+      <el-dialog title="提示" :visible.sync="addCateDialogVisible" width="50%" @close="addCateDialogClose">
         <el-form
           ref="addCateFormRef"
           :model="addCateForm"
@@ -80,7 +80,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="addCateDialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addCateDialogVisible = false">确 定</el-button>
+          <el-button type="primary" @click="addCate">确 定</el-button>
         </span>
       </el-dialog>
     </el-card>
@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { apiGetCateList } from '../../api'
+import { apiGetCateList, apiAddCate } from '../../api'
 export default {
   data() {
     return {
@@ -173,7 +173,35 @@ export default {
       }
       this.parentCateList = res.data
     },
-    parentCateChanged() {}
+    parentCateChanged() {
+      if (this.selectedKeys.length > 0) {
+        this.addCateForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1]// 父级分类id
+        this.addCateForm.cat_level = this.selectedKeys.length// 等级id
+      } else {
+        this.addCateForm.cat_pid = 0
+        this.addCateForm.cat_level = 0
+      }
+    },
+    addCate() {
+      console.log(this.addCateForm)
+      this.$refs.addCateFormRef.validate(async (valid) => {
+        if (!valid) return
+        const { data: res } = await apiAddCate(this.addCateForm)
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.msg)
+        } else {
+          this.getCateList()
+          this.addCateDialogVisible = false
+          return this.$message.success(res.meta.msg)
+        }
+      })
+    },
+    addCateDialogClose() {
+      this.$refs.addCateFormRef.resetFields()
+      this.selectedKeys = []
+      this.addCateForm.cat_pid = 0
+      this.addCateForm.cat_level = 0
+    }
   }
 }
 </script>

@@ -58,3 +58,7 @@ export async function apiGetCateList(type = '3') {
   const res = await axios.get('/api/categories?type=' + type)
   return res
 }
+export async function apiAddCate(addCateForm) {
+  const res = await axios.post('/api/categories', addCateForm)
+  return res
+}
