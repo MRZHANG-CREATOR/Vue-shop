@@ -4,7 +4,7 @@ module.exports = async ctx => {
     ctx.body = {
       data: {},
       meta: {
-        msg: '分类添加成功',
+        msg: '添加成功',
         status: 200
       }
     }
@@ -12,7 +12,7 @@ module.exports = async ctx => {
     ctx.body = {
       data: {},
       meta: {
-        msg: '分类添加失败',
+        msg: '添加失败',
         status: 400
       }
     }
