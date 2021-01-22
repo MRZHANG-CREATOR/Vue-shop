@@ -62,3 +62,15 @@ export async function apiAddCate(addCateForm) {
   const res = await axios.post('/api/categories', addCateForm)
   return res
 }
+/**
+ * @param {number} [id]
+ * @param {number} [attrid]
+ */
+export async function apiDeleteParam(id, attrid) {
+  const res = await axios.delete(`/api/categories/${id}/attributes/${attrid}`)
+  return res
+}
+export async function apiAddParamTag(id, attrid, attr) {
+  const res = await axios.put(`/api/categories/${id}/attributes/${attrid}`, attr)
+  return res
+}

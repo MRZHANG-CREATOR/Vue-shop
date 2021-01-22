@@ -24,6 +24,8 @@ router.get('/roles', require('./route/rolesget'))
 router.post('/roles', require('./route/rolespost'))// 分配权限路由
 router.get('/categories', require('./route/cate/categoriesget'))
 router.post('/categories', require('./route/cate/categoriespost'))
+router.delete('/categories/:id/attributes/:attrid', require('./route/cate/categoriesdelete'))
+router.put('/categories/:id/attributes/:attrid', require('./route/cate/categoriesput'))
 app.use(router.routes())
 app.listen(8888, '0.0.0.0', ctx => {
   console.log('服务器成功:http://127.0.0.1:8888')

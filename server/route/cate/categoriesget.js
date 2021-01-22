@@ -4,7 +4,7 @@ module.exports = async ctx => {
   // console.log(ctx.query.name)
   console.log(ctx.query.type)
   const { type, sel } = ctx.query
-  if (sel === 'many') {
+  if (sel === 'many' || sel === 'only') {
     ctx.body = {
       data: [
         {
@@ -13,7 +13,23 @@ module.exports = async ctx => {
           cat_id: 22,
           attr_sel: "only",
           attr_write: "manual",
-          attr_vals: "ffff"
+          attr_vals: "ffff 444 444 55 66 66 77 88 9 9"
+        },
+        {
+          attr_id: 2,
+          attr_name: "cpu2",
+          cat_id: 23,
+          attr_sel: "only",
+          attr_write: "manual",
+          attr_vals: "ffff 444 444 55 66 66 77 88 9 9"
+        },
+        {
+          attr_id: 3,
+          attr_name: "cpu3",
+          cat_id: 24,
+          attr_sel: "only",
+          attr_write: "manual",
+          attr_vals: "ffff 444 444 55 66 66 77 88 9 9"
         }
       ],
       meta: {
