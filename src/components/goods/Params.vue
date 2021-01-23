@@ -10,7 +10,7 @@
     <!-- 卡片视图-->
     <el-card>
       <!--警告-->
-      <el-alert title="警告提示的文案" type="warning" :closable="false" :show-icon="true">
+      <el-alert title="注意！ 只能为第三级分类设置相关参数" type="warning" :closable="false" :show-icon="true">
       </el-alert>
       <el-row>
         <el-col>
@@ -33,7 +33,7 @@
            <el-table-column type='expand'>
            <template slot-scope="scope">
            <!--循环渲染tag-->
-           <el-tag v-for="(item,index) in scope.row.attr_vals" :key="index" closable>{{item}}</el-tag>
+           <el-tag v-for="(item,index) in scope.row.attr_vals" :key="index" closable @close='handleClose(index,scope.row)'>{{item}}</el-tag>
            <!--动态编辑标签-->
            <el-input
             class="input-new-tag"
@@ -60,8 +60,24 @@
         <el-tab-pane label="静态属性" name="only"
           ><el-button size="mini" type="primary" :disabled="isBtnDisabled" @click="addDialogVisible=true"
             >添加属性</el-button>
-           <el-table :data="manyTableData" :border="true" :stripe="true">
-           <el-table-column type='expand'></el-table-column>
+           <el-table :data="onlyTableData" :border="true" :stripe="true">
+           <el-table-column type='expand'>
+           <template slot-scope="scope">
+           <!--循环渲染tag-->
+           <el-tag v-for="(item,index) in scope.row.attr_vals" :key="index" closable @close='handleClose(index,scope.row)'>{{item}}</el-tag>
+           <!--动态编辑标签-->
+           <el-input
+            class="input-new-tag"
+            v-if="scope.row.inputVisible"
+            v-model="scope.row.inputValue"
+            ref="saveTagInput"
+            size="small"
+            @keyup.enter.native="handleInputConfirm(scope.row)"
+            @blur="handleInputConfirm(scope.row)">
+            </el-input>
+            <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag</el-button>
+           </template>
+           </el-table-column>
            <el-table-column type='index'></el-table-column>
            <el-table-column label="属性名称" prop="attr_name"></el-table-column>
            <el-table-column label="操作" >
@@ -175,12 +191,10 @@ export default {
       }
       this.cateList = res.data.result
     },
-    async handleChange() {
-      console.log(this.selectedCateKeys)
+    async handleChange() { // 级联选择器变换
       this.getParamsData()
     },
     handleClick() {
-      console.log(this.activeName)
       this.getParamsData()
     },
     // 获取参数列表
@@ -200,10 +214,10 @@ export default {
         } else if (this.activeName === 'only') {
           this.onlyTableData = res.data
         }
-        console.log(res)
-        console.log('hello')
       } else {
         this.selectedCateKeys = []
+        this.manyTableData = []
+        this.onlyTableData = []
       }
     },
     addFormClosed () {
@@ -262,7 +276,7 @@ export default {
         })
     },
     // 动态编辑标签methods
-    async handleInputConfirm (row) { // 文本框回车或失焦触发
+    handleInputConfirm (row) { // 文本框回车或失焦触发
     if (row.inputValue.trim().length === 0) { // 内容不合理
       row.inputVisible = false
       row.inputValue = ''
@@ -272,9 +286,7 @@ export default {
     row.attr_vals.push(row.inputValue.trim())
     row.inputVisible = false
     row.inputValue = ''
-    const { data: res } = await apiAddParamTag(this.cateId, row.attrid, { attr_name: row.attr_name, attr_sel: row.attr_sel, attr_vals: row.attr_vals.join(' ') })
-    if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-    this.$message.success(res.meta.msg)
+      this.saveAttrVals(row)
     },
     showInput (row) {
       row.inputVisible = true
@@ -282,6 +294,15 @@ export default {
       this.$nextTick(_ => { // 文本框自动获得焦点
           this.$refs.saveTagInput.$refs.input.focus()
         })
+    },
+    handleClose(index, row) { // 删除参数项
+      row.attr_vals.splice(index, 1)
+      this.saveAttrVals(row)
+    },
+    async saveAttrVals(row) {
+      const { data: res } = await apiAddParamTag(this.cateId, row.attrid, { attr_name: row.attr_name, attr_sel: row.attr_sel, attr_vals: row.attr_vals.join(' ') })
+    if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+    this.$message.success(res.meta.msg)
     }
   }
 }
@@ -299,5 +320,8 @@ margin-top: 10px;
 }
 .el-tag{
 margin:  10px;
+}
+.input-new-tag{
+width: 100px;
 }
 </style>

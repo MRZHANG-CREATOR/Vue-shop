@@ -4,7 +4,7 @@ module.exports = async ctx => {
   // console.log(ctx.query.name)
   console.log(ctx.query.type)
   const { type, sel } = ctx.query
-  if (sel === 'many' || sel === 'only') {
+  if (sel === 'many') {
     ctx.body = {
       data: [
         {
@@ -30,6 +30,39 @@ module.exports = async ctx => {
           attr_sel: "only",
           attr_write: "manual",
           attr_vals: "ffff 444 444 55 66 66 77 88 9 9"
+        }
+      ],
+      meta: {
+        msg: "获取成功",
+        status: 200
+      }
+    }
+  } else if (sel === 'only') {
+    ctx.body = {
+      data: [
+        {
+          attr_id: 1,
+          attr_name: "颜色",
+          cat_id: 22,
+          attr_sel: "only",
+          attr_write: "manual",
+          attr_vals: "赤 橙 黄 绿 青 蓝 紫"
+        },
+        {
+          attr_id: 2,
+          attr_name: "屏幕",
+          cat_id: 23,
+          attr_sel: "only",
+          attr_write: "manual",
+          attr_vals: "曲面 平面"
+        },
+        {
+          attr_id: 3,
+          attr_name: "尺寸",
+          cat_id: 24,
+          attr_sel: "only",
+          attr_write: "manual",
+          attr_vals: "100 200 300 400"
         }
       ],
       meta: {
