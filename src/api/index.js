@@ -74,3 +74,11 @@ export async function apiAddParamTag(id, attrid, attr) {
   const res = await axios.put(`/api/categories/${id}/attributes/${attrid}`, attr)
   return res
 }
+export async function apiGetGoodList(queryInfo) {
+  const res = await axios.get('/api/goods', { params: queryInfo })
+  return res
+}
+export async function apiDeleteGood(id) {
+  const res = await axios.delete('/api/goods/' + id)
+  return res
+}

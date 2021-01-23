@@ -11,6 +11,17 @@ import TreeTable from 'vue-table-with-tree-grid'
 // Vue.prototype.$http = axios // 把axios挂载到Vue原型上
 Vue.config.productionTip = false
 Vue.component('tree-table', TreeTable)
+Vue.filter('dateFormat', function(originVal) { // 全局时间格式化过滤器
+ const dt = new Date(originVal)
+ const y = dt.getFullYear()
+ const m = (dt.getMonth() + 1 + '').padStart(2, '')
+ const d = (dt.getDate() + '').padStart(2, '')
+
+ const hh = (dt.getHours() + '').padStart(2, '')
+ const mm = (dt.getMinutes() + '').padStart(2, '')
+ const ss = (dt.getSeconds() + '').padStart(2, '')
+  return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+})
 new Vue({
   router,
   render: h => h(App)

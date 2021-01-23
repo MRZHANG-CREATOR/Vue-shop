@@ -32,9 +32,13 @@ import {
   Cascader,
   Alert,
   TabPane,
-  Tabs
+  Tabs,
+  Steps,
+  Step
 } from 'element-ui'
 Vue.prototype.$confirm = MessageBox.confirm
+Vue.use(Step)
+Vue.use(Steps)
 Vue.use(TabPane)
 Vue.use(Tabs)
 Vue.use(Alert)
