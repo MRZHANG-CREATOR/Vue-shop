@@ -1,5 +1,5 @@
 module.exports = ctx => {
-    console.log(ctx.query)
+    // console.log(ctx.query)
     const { query, pagenum, pagesize } = ctx.query
     console.log(query, pagenum, pagesize)
     ctx.body = {
