@@ -1,6 +1,6 @@
 const {
   userData
-} = require('../model/userdata')
+} = require('../../model/userdata')
 const pagination = require('mongoose-sex-page')
 module.exports = async ctx => {
   // console.log(ctx.query)

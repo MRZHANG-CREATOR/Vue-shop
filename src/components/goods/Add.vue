@@ -20,7 +20,7 @@
     </el-steps>
     <!--tab 栏-->
     <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
-     <el-tabs v-model="activeIndex" :tab-position="tabPosition">
+     <el-tabs v-model="activeIndex" :tab-position="tabPosition" :before-leave="beforeTabLeave" @tab-click="tabClick">
     <el-tab-pane label="基本信息" name="0">
     <el-form-item label="商品名称" prop="goods_name">
     <el-input v-model="addForm.goods_name"></el-input>
@@ -43,9 +43,31 @@
             </el-cascader>
     </el-form-item>
     </el-tab-pane>
-    <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
-    <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
-    <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
+    <el-tab-pane label="商品参数" name="1">
+    <el-form-item v-for="item in manyTabData" :label="item.attr_name" :key="item.attr_id">
+    <!--复选框-->
+    <el-checkbox-group v-model="item.attr_vals">
+    <el-checkbox v-for="(it, i) in item.attr_vals" :label="it" :key="i" border></el-checkbox>
+  </el-checkbox-group>
+    </el-form-item>
+    </el-tab-pane>
+    <el-tab-pane label="商品属性" name="2">
+    <el-form-item v-for="item in onlyTabData" :label="item.attr_name" :key="item.attr_id">
+    <el-input v-model="item.attr_vals"></el-input>
+    </el-form-item>
+    </el-tab-pane>
+    <el-tab-pane label="商品图片" name="3">
+    <el-upload
+    action=""
+  :on-preview="handlePreview"
+  :on-remove="handleRemove"
+  list-type="picture"
+  :headers="headerObj"
+  :http-request="setRequest">
+  <el-button size="small" type="primary">点击上传</el-button>
+  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+</el-upload>
+    </el-tab-pane>
     <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
   </el-tabs>
     </el-form>
@@ -54,7 +76,7 @@
 </template>
 
 <script>
-import { apiGetCateList } from '../../api'
+import { apiGetCateList, apiGetParams, apiUpload } from '../../api'
     export default {
         data() {
             return {
@@ -65,7 +87,8 @@ import { apiGetCateList } from '../../api'
                     goods_price: 0,
                     goods_weight: 0,
                     goods_number: 0,
-                    goods_cat: ''
+                    goods_cat: '',
+                    pics: []
                 },
                 addFormRules: {
                     goods_name: [{ required: true, message: '必填项', trigger: 'blur' }],
@@ -80,11 +103,22 @@ import { apiGetCateList } from '../../api'
                     value: 'cat_id',
                     label: 'cat_name',
                     children: 'children'
-                }
+                },
+                manyTabData: [], // 动态参数数据
+                onlyTabData: [], // 静态参数数据
+                headerObj: {} // 图片上传自定义请求头
             }
         },
         created () {
             this.getCateList()
+        },
+        computed: {
+             cateId() {
+                if (this.addForm.goods_cat.length === '') {
+                    return this.addForm.goods_cat[2]
+                }
+                return null
+            }
         },
         methods: {
             async getCateList() {
@@ -99,6 +133,42 @@ import { apiGetCateList } from '../../api'
                 if (this.addForm.goods_cat.length !== 3) {
                     this.addForm.goods_cat = []
                 }
+            },
+            beforeTabLeave(activeName, oldActiveName) {
+                if (oldActiveName === '0' && this.addForm.goods_cat.length !== 3) {
+                    this.$message.error('未选择商品分类')
+                    return false
+                }
+            },
+            async tabClick() {
+                if (this.activeIndex === '1') { // 获取参数面板
+                    const { data: res } = await apiGetParams(this.cateId, 'many')
+                    if (res.meta.status !== 200) {
+                        return this.$message.error(res.meta.msg)
+                    }
+                     res.data.forEach((item) => {
+                        item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
+                    })
+                    this.manyTabData = res.data
+                } else if (this.activeIndex === '2') {
+                    const { data: res } = await apiGetParams(this.cateId, 'only')
+                    if (res.meta.status !== 200) {
+                        return this.$message.error(res.meta.msg)
+                    }
+                    console.log(res)
+                    this.onlyTabData = res.data
+                }
+            },
+            handlePreview() { // 预览事件
+            },
+            handleRemove() { // 移除事件
+            },
+            async setRequest(params) { // 设置文件上传
+                const { data: res } = await apiUpload(params)
+                if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+                this.addForm.pics.push({ pics: res.data.tem_path })
+                console.log(this.addForm)
+                this.$message.success(res.meta.msg)
             }
         }
     }
@@ -114,4 +184,9 @@ margin-top: 20px;
 .el-tab-pane{
 text-align: left;
 }
+.el-checkbox{
+margin: 0 10px;
+}
+.el-form-item{
+margin: 0;}
 </style>

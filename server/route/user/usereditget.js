@@ -1,6 +1,6 @@
 const {
   userData
-} = require('../model/userdata')
+} = require('../../model/userdata')
 module.exports = async ctx => {
   const { id } = ctx.query
   // console.log(id)

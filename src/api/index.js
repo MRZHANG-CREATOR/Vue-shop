@@ -82,3 +82,11 @@ export async function apiDeleteGood(id) {
   const res = await axios.delete('/api/goods/' + id)
   return res
 }
+export async function apiGetParams(id, sel) {
+  const res = await axios.get(`/api/categories/${id}/attributes`, { params: { sel: sel } })
+  return res
+}
+export async function apiUpload(params) {
+  const res = await axios.post('/api/upload', params)
+  return res
+}

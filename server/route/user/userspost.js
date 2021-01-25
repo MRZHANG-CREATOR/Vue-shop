@@ -1,6 +1,6 @@
 const {
   userData
-} = require('../model/userdata')
+} = require('../../model/userdata')
 const jwt = require('jsonwebtoken')
 module.exports = async ctx => {
   // console.log(ctx.request.body)

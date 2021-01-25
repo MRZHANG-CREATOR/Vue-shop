@@ -1,28 +1,26 @@
 const {
   userData
-} = require('../model/userdata')
+} = require('../../model/userdata')
 module.exports = async ctx => {
   const { id } = ctx.query
-  const { email, mobile } = ctx.request.body
+  //   console.log(id)
   try {
-    await userData.updateOne({ _id: id }, {
-      email: email,
-      mobile: mobile
-    })
+    await userData.findByIdAndDelete(id)
     ctx.body = {
       data: {
       },
       meta: {
-        msg: '用户信息更新成功',
+        msg: '用户删除成功',
         status: 200
       }
     }
   } catch (err) {
+    console.log(err)
     ctx.body = {
       data: {
       },
       meta: {
-        msg: '用户信息更新失败',
+        msg: '用户删除失败',
         status: 400
       }
     }
