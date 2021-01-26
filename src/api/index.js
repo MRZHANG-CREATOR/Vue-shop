@@ -90,3 +90,7 @@ export async function apiUpload(params) {
   const res = await axios.post('/api/upload', params)
   return res
 }
+export async function apiAddGoods(form) {
+  const res = await axios.post('/api/goods', form)
+  return res
+}

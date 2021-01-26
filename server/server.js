@@ -30,6 +30,7 @@ router.put('/categories/:id/attributes/:attrid', require('./route/cate/categorie
 router.get('/goods', require('./route/cate/goodsget'))
 router.delete('/goods/:id', require('./route/cate/goodsdelete'))
 router.post('/upload', require('./route/cate/uploadpost'))
+router.post('/goods', require('./route/cate/goodspost'))
 app.use(router.routes())
 app.listen(8888, '0.0.0.0', ctx => {
   console.log('服务器成功:http://127.0.0.1:8888')

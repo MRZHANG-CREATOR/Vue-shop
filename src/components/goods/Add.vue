@@ -60,6 +60,7 @@
     <el-upload
     action=""
   :on-preview="handlePreview"
+  :on-success="handleSuccess"
   :on-remove="handleRemove"
   list-type="picture"
   :headers="headerObj"
@@ -68,15 +69,26 @@
   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
 </el-upload>
     </el-tab-pane>
-    <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
+    <el-tab-pane label="商品内容" name="4">
+    <quill-editor v-model="addForm.goods_introduce"></quill-editor>
+    <el-button type="primary" @click='add'>添加商品</el-button>
+    </el-tab-pane>
   </el-tabs>
     </el-form>
     </el-card>
+    <!--预览对话框-->
+    <el-dialog
+  title="提示"
+  :visible.sync="previewDialogVisible"
+  width="30%">
+  <img :src="previewPath" alt="">
+</el-dialog>
     </div>
 </template>
 
 <script>
-import { apiGetCateList, apiGetParams, apiUpload } from '../../api'
+import { apiGetCateList, apiGetParams, apiUpload, apiAddGoods } from '../../api'
+import _ from 'lodash'
     export default {
         data() {
             return {
@@ -106,7 +118,9 @@ import { apiGetCateList, apiGetParams, apiUpload } from '../../api'
                 },
                 manyTabData: [], // 动态参数数据
                 onlyTabData: [], // 静态参数数据
-                headerObj: {} // 图片上传自定义请求头
+                headerObj: {}, // 图片上传自定义请求头
+                previewDialogVisible: false,
+                previewPath: ''
             }
         },
         created () {
@@ -159,16 +173,60 @@ import { apiGetCateList, apiGetParams, apiUpload } from '../../api'
                     this.onlyTabData = res.data
                 }
             },
-            handlePreview() { // 预览事件
+            handlePreview(file) { // 预览事件
+                console.log(file)
+                this.previewPath = file.data.response.url
+                this.previewDialogVisible = true
             },
-            handleRemove() { // 移除事件
+            handleSuccess(res) {
+                this.addForm.pics.push({ pics: res.data.tem_path })
+            },
+            handleRemove(file) { // 移除事件
+                console.log(file)
+                const filePath = file.response.data.tem_path
+                const i = this.addForm.pics.findIndex(x => x.pics === filePath)
+                this.addForm.pics.splice(i, 1)
+                console.log(this.addForm)
             },
             async setRequest(params) { // 设置文件上传
                 const { data: res } = await apiUpload(params)
-                if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-                this.addForm.pics.push({ pics: res.data.tem_path })
-                console.log(this.addForm)
-                this.$message.success(res.meta.msg)
+                return res
+                // if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+                // this.addForm.pics.push({ pics: res.data.tem_path })
+                // console.log(this.addForm)
+                // this.$message.success(res.meta.msg)
+            },
+            add() {
+                this.$refs.addFormRef.validate(async valid => {
+                    if (!valid) return this.$message.error('请输入必要信息')
+                    this.$message.success('验证成功')
+                    // 深拷贝 lodash cloneDeep(obj)
+                    const form = _.cloneDeep(this.addForm)
+                    console.log(form)
+                    // 处理动态参数
+                    console.log(this.manyTabData)
+                    this.manyTabData.forEach(item => {
+                        const newInfo = {
+                            attr_id: item.attr_id,
+                            attr_value: item.attr_vals
+                        }
+                        this.addForm.attrs.push(newInfo)
+                    })
+                    // 处理静态属性
+                    this.onlyTabData.forEach(item => {
+                        const newInfo = {
+                            attr_id: item.attr_id,
+                            attr_value: item.attr_vals
+                        }
+                        this.addForm.attrs.push(newInfo)
+                    })
+                    form.attr = this.addForm.attrs
+                    console.log(form)
+                    const { data: res } = await apiAddGoods(form)
+                    if (res.meta.status !== 200) return this.$message.error(res.mata.msg)
+                    this.$message.success(res.meta.msg)
+                    this.$router.push('/cartlist')
+                })
             }
         }
     }
@@ -189,4 +247,9 @@ margin: 0 10px;
 }
 .el-form-item{
 margin: 0;}
+.ql-container{
+margin: 10px;
+height: 200px;}
+.el-button{
+margin-top: 10px;}
 </style>
