@@ -22,3 +22,6 @@ ul, li, div {
     display: flex;
     align-items: center;
 }
+.el-pagination{
+    margin-top: 10px;
+}

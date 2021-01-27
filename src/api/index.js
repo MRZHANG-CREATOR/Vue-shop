@@ -94,3 +94,11 @@ export async function apiAddGoods(form) {
   const res = await axios.post('/api/goods', form)
   return res
 }
+export async function apiGetOrderList(queryInfo) {
+  const res = await axios.get('/api/order', { params: queryInfo })
+  return res
+}
+export async function apiGetKuaiDi(order) {
+  const res = await axios.get(`/api/kuaidi/${order}`)
+  return res
+}
