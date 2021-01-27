@@ -57,7 +57,7 @@ module.exports = ctx => {
         path: null,
         children: [{
           id: 1041,
-          authName: '商品列表',
+          authName: '订单列表',
           path: 'order',
           children: []
         }]
@@ -68,8 +68,8 @@ module.exports = ctx => {
         path: null,
         children: [{
           id: 1051,
-          authName: '商品列表',
-          path: 'data',
+          authName: '数据报表',
+          path: 'report',
           children: []
         }]
       }

@@ -33,6 +33,7 @@ router.post('/upload', require('./route/cate/uploadpost'))
 router.post('/goods', require('./route/cate/goodspost'))
 router.get('/order', require('./route/order/orderget'))
 router.get('/kuaidi/:id', require('./route/order/kuaidiget'))
+router.get('/report/type/1', require('./route/report/reportget'))
 app.use(router.routes())
 app.listen(8888, '0.0.0.0', ctx => {
   console.log('服务器成功:http://127.0.0.1:8888')

@@ -102,3 +102,7 @@ export async function apiGetKuaiDi(order) {
   const res = await axios.get(`/api/kuaidi/${order}`)
   return res
 }
+export async function apiGetReport() {
+  const res = await axios.get('/api/report/type/1')
+  return res
+}
