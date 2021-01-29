@@ -1,8 +1,17 @@
 import axios from 'axios'
+// 引入进度条及样式
+import Nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
+// 请求拦截器request 中展示进度条
 axios.interceptors.request.use(config => {
   // axios请求拦截器
+  Nprogress.start() // 显示进度条
   // console.log(config)
   config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config
+})
+axios.interceptors.response.use(config => {
+  Nprogress.done() // 隐藏进度条
   return config
 })
 export async function apiLogin({ username, password }) {
