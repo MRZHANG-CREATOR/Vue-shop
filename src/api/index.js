@@ -6,7 +6,6 @@ import 'nprogress/nprogress.css'
 axios.interceptors.request.use(config => {
   // axios请求拦截器
   Nprogress.start() // 显示进度条
-  // console.log(config)
   config.headers.Authorization = window.sessionStorage.getItem('token')
   return config
 })
@@ -40,7 +39,6 @@ export async function apiAddUser(io) {
 }
 export async function apiShowUser(id) {
   const res = await axios.get(`/api/usershow?id=${id}`)
-  console.log(res)
   return res
 }
 export async function apiEditUserInfo(id, editUserInfo) {

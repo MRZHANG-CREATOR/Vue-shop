@@ -5,11 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <!-- 引入样式 -->
+    <!--CDN引入-->
+    <% if(htmlWebpackPlugin.options.isProd){ %>
+    <!--element-->
+    <!-- element引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <!-- 引入组件库 -->
+    <!-- element引入组件库 -->
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-    <title><%= htmlWebpackPlugin.options.title %></title>
+
+    <!--nprogress-->
+    <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
+    <script type="text/javascript" src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
+    
+    <!--quill-->
+    <link rel="stylesheet" href="path/to/quill.core.css"/>
+    <link rel="stylesheet" href="path/to/quill.snow.css"/>
+    <link rel="stylesheet" href="path/to/quill.bubble.css"/>
+    <script type="text/javascript" src="path/to/quill.js"></script>
+    <script type="text/javascript" src="path/to/vue.min.js"></script>
+    <script type="text/javascript" src="path/to/dist/vue-quill-editor.js"></script>
+    <script type="text/javascript">
+      Vue.use(window.VueQuillEditor)
+    </script>
+    <% } %>
+    <title><%= htmlWebpackPlugin.options.isProd ? '': 'dev-' %>电商管理系统</title>
   </head>
   <body>
     <noscript>
